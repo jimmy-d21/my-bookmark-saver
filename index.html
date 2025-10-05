@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Bookmark Saver</title>
+  </head>
+  <body class="p-4 bg-gray-200 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white p-4 rounded-xl shadow-md">
+      <h1 class="text-green-500 text-3xl mb-4 text-center font-semibold">
+        Bookmark Saver
+      </h1>
+      <div class="flex mb-4 flex-col gap-2">
+        <input
+          class="px-4 py-2 border outline-none rounded-md"
+          type="text"
+          id="bookmark-name"
+          placeholder="Bookmark Name"
+        />
+        <input
+          class="px-4 py-2 border outline-none rounded-md"
+          type="text"
+          id="bookmark-url"
+          placeholder="Bookmark URL"
+        />
+        <button
+          id="add-bookmark-btn"
+          class="py-2 bg-green-400 text-white text-md rounded-md duration-200 font-semibold active:scale-95"
+        >
+          Add Bookmark
+        </button>
+      </div>
+      <ul id="bookmark-list" class="flex flex-col gap-2 max-h-80 overflow-y-auto w-full">
+        <li>
+          <a href="youtube.com" target="_blank">Youtube</a>
+          <button>Remove</button>
+        </li>
+      </ul>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
