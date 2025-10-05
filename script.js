@@ -1,10 +1,10 @@
-// Dom
+// DOM Elements
 const bookmarkNameInput = document.getElementById("bookmark-name");
 const bookmarkUrlInput = document.getElementById("bookmark-url");
 const bookmarkAddButton = document.getElementById("add-bookmark-btn");
 const bookmarkList = document.getElementById("bookmark-list");
 
-// Event Listeners
+// Event Listener
 bookmarkAddButton.addEventListener("click", addBookmark);
 
 function addBookmark() {
@@ -14,16 +14,16 @@ function addBookmark() {
   if (!name || !url) {
     alert("Please provide both name and URL.");
     return;
-  } else if (!name.startsWith("http://") && !url.startsWith("https://")) {
+  } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
     alert("Please provide a valid URL.");
     return;
   }
 
-  const bookmark = {
-    name,
-    url,
-  };
-  saveLocalBookmarks(bookmark);
+  const bookmark = { name, url };
+
+  const success = saveLocalBookmarks(bookmark);
+  if (!success) return; // If duplicate, abort
+
   createBookmarkElement(bookmark);
   bookmarkNameInput.value = "";
   bookmarkUrlInput.value = "";
@@ -31,35 +31,58 @@ function addBookmark() {
 
 function createBookmarkElement(bookmark) {
   const li = document.createElement("li");
-  const links = document.createElement("a");
+  const link = document.createElement("a");
   const removeBtn = document.createElement("button");
 
-  links.href = bookmark.url;
-  links.target = "_blank";
-  links.textContent = bookmark.name;
+  link.href = bookmark.url;
+  link.target = "_blank";
+  link.textContent = bookmark.name;
 
   removeBtn.textContent = "Remove";
-  li.appendChild(links);
+  removeBtn.addEventListener("click", () => {
+    deleteBookmark(bookmark, li);
+  });
+
+  li.appendChild(link);
   li.appendChild(removeBtn);
   bookmarkList.appendChild(li);
 }
 
 function getLocalBookmarks() {
-  const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
-  return bookmarks;
+  return JSON.parse(localStorage.getItem("bookmarks")) || [];
 }
 
 function saveLocalBookmarks(bookmark) {
   let bookmarks = getLocalBookmarks();
-  bookmarks.push({
-    name: bookmark.name,
-    url: bookmark.url,
-  });
+
+  const duplicate = bookmarks.find(
+    (b) => b.name === bookmark.name && b.url === bookmark.url
+  );
+  if (duplicate) {
+    alert("Bookmark already exists.");
+    return false;
+  }
+
+  bookmarks.push(bookmark);
   localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+  return true;
 }
 
 function renderBookmarks() {
   const bookmarks = getLocalBookmarks();
   bookmarks.forEach((bookmark) => createBookmarkElement(bookmark));
 }
+
+function deleteBookmark(bookmark, element) {
+  let bookmarks = getLocalBookmarks();
+  bookmarks = bookmarks.filter(
+    (b) => b.name !== bookmark.name || b.url !== bookmark.url
+  );
+  localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+  if (element) {
+    element.remove();
+  }
+}
+
+// Initial render on page load
 renderBookmarks();
