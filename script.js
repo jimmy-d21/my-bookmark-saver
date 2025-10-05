@@ -23,7 +23,7 @@ function addBookmark() {
     name,
     url,
   };
-
+  saveLocalBookmarks(bookmark);
   createBookmarkElement(bookmark);
   bookmarkNameInput.value = "";
   bookmarkUrlInput.value = "";
@@ -43,3 +43,23 @@ function createBookmarkElement(bookmark) {
   li.appendChild(removeBtn);
   bookmarkList.appendChild(li);
 }
+
+function getLocalBookmarks() {
+  const bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+  return bookmarks;
+}
+
+function saveLocalBookmarks(bookmark) {
+  let bookmarks = getLocalBookmarks();
+  bookmarks.push({
+    name: bookmark.name,
+    url: bookmark.url,
+  });
+  localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+}
+
+function renderBookmarks() {
+  const bookmarks = getLocalBookmarks();
+  bookmarks.forEach((bookmark) => createBookmarkElement(bookmark));
+}
+renderBookmarks();
